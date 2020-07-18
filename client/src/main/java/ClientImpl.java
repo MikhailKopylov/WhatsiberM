@@ -8,13 +8,13 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Objects;
 
 
 public class ClientImpl implements Client {
 
     private static final int PORT = 8181;
     private static final String IP_ADDRESS = "localhost";
-    public static final String REGEX_SPLIT = "\\s+";
 
     private final Controller controller;
 
@@ -74,7 +74,6 @@ public class ClientImpl implements Client {
 
                     if (commandMsg.startsWith(Commands.EXIT.toString())) {
                         controller.logout();
-//                        return;
                     }
 
                     if (commandMsg.startsWith(Commands.AUTH_OK.toString())) {
@@ -82,16 +81,8 @@ public class ClientImpl implements Client {
                         controller.addNewMessage(String.format("%s в сети", nick));
                         controller.setAuthorized(true);
                         break;
-                    } else if (commandMsg.startsWith(Commands.AUTH_WRONG.toString())) {
-                        controller.addNewMessage("Неверное имя пользователя или пароль");
-                    } else if (commandMsg.startsWith(Commands.REG_OK.toString())) {
-                        controller.getRegController().addMessage("Регистрация прошла успешно");
-                    } else if (commandMsg.startsWith(Commands.REG_WRONG.toString())) {
-                        controller.getRegController().addMessage("Имя пользователя или ник уже заняты. Попробуйте еще раз");
-                    } else if (commandMsg.startsWith(Commands.ONLINE_WRONG.toString())) {
-                        String nickOnlineWrong = commandMsg.split(REGEX_SPLIT)[1];
-                        controller.addNewMessage(String.format("%s уже в сети", nickOnlineWrong));
                     }
+                    parseAuthRegCommand(commandMsg);
 
                 }
                 while (true) {
@@ -114,24 +105,71 @@ public class ClientImpl implements Client {
         waitMessage.start();
     }
 
-    private void parseCommandMsg(String incomingMsg) {
+    private void parseAuthRegCommand(String commandMsg) {
+        String commandStr = commandMsg.split(REGEX_SPLIT)[0];
+        Commands command = Commands.convertToCommand(commandStr);
 
-        if (incomingMsg.startsWith(Commands.USER_ONLINE.toString())) {
-            String newUserNick = incomingMsg.split(REGEX_SPLIT)[1];
-            controller.addNewMessage(String.format("%s в сети", newUserNick));
-        } else if (incomingMsg.startsWith(Commands.USER_LIST.toString())) {
-            String[] token = incomingMsg.split(REGEX_SPLIT, 2);
-            String[] users = token[1].split(REGEX_SPLIT);
-            controller.updateUserList(users);
-        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_OK.toString())) {
-            String newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
-            controller.getChangeNickController().addMessage("Смена ника прошла успешно. Ваш новый ник: " + newNick);
-            nick = newNick;
-            controller.getChangeNickController().setNewNick(nick);
-        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_WRONG.toString())) {
-            String newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
-            controller.getChangeNickController().addMessage(newNick + " - такой ник уже используется. Введите другой вариант.");
+        switch (Objects.requireNonNull(command)) {
+
+            case AUTH_WRONG:
+                controller.addNewMessage("Неверное имя пользователя или пароль");
+                break;
+
+            case REG_OK:
+                controller.getRegController().addMessage("Регистрация прошла успешно");
+                break;
+
+            case REG_WRONG:
+                controller.getRegController()
+                        .addMessage("Имя пользователя или ник уже заняты. Попробуйте еще раз");
+                break;
+
+            case ONLINE_WRONG:
+                String nickOnlineWrong = commandMsg.split(REGEX_SPLIT)[1];
+                controller.addNewMessage(String.format("%s уже в сети", nickOnlineWrong));
+                break;
         }
+//        if (commandMsg.startsWith(Commands.AUTH_WRONG.toString())) {
+//        } else if (commandMsg.startsWith(Commands.REG_OK.toString())) {
+//        } else if (commandMsg.startsWith(Commands.REG_WRONG.toString())) {
+//        } else if (commandMsg.startsWith(Commands.ONLINE_WRONG.toString())) {
+//        }
+    }
+
+    private void parseCommandMsg(String incomingMsg) {
+        String commandStr = incomingMsg.split(REGEX_SPLIT, 2)[0];
+        Commands command = Commands.convertToCommand(commandStr);
+        switch (Objects.requireNonNull(command)) {
+
+            case USER_ONLINE:
+                String newUserNick = incomingMsg.split(REGEX_SPLIT)[1];
+                controller.addNewMessage(String.format("%s в сети", newUserNick));
+                break;
+
+            case USER_LIST:
+                String[] token = incomingMsg.split(REGEX_SPLIT, 2);
+                String[] users = token[1].split(REGEX_SPLIT);
+                controller.updateUserList(users);
+                break;
+
+            case CHANGE_NICK_OK:
+                String newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
+                controller.getChangeNickController().addMessage("Смена ника прошла успешно. Ваш новый ник: " + newNick);
+                nick = newNick;
+                controller.getChangeNickController().setNewNick(nick);
+                break;
+
+            case CHANGE_NICK_WRONG:
+                newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
+                controller.getChangeNickController()
+                        .addMessage(newNick + " - такой ник уже используется. Введите другой вариант.");
+                break;
+        }
+//        if (incomingMsg.startsWith(Commands.USER_ONLINE.toString())) {
+//        } else if (incomingMsg.startsWith(Commands.USER_LIST.toString())) {
+//        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_OK.toString())) {
+//        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_WRONG.toString())) {
+//        }
 
     }
 

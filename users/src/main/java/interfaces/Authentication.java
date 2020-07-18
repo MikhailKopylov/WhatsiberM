@@ -11,4 +11,5 @@ public interface Authentication {
         boolean registration(UserData userData);
         NickName updateNickname(NickName oldNick, NickName newNick);
 
+        void close();
 }

@@ -44,7 +44,6 @@ public class Controller implements Initializable {
 
     private Stage stage;
     private Stage regStage;
-    private Stage changeNickStage;
     private RegController regController;
     private ChangeNickController changeNickController;
 
@@ -193,8 +192,8 @@ public class Controller implements Initializable {
         return stage;
     }
 
-    public void changeNick(ActionEvent actionEvent) {
-        changeNickStage = createChangeNickStage();
+    public void changeNick() {
+        Stage changeNickStage = createChangeNickStage();
         changeNickStage.show();
     }
 

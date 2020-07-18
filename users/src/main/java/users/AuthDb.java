@@ -4,6 +4,7 @@ import database.DbHelper;
 import interfaces.Authentication;
 
 public class AuthDb implements Authentication {
+
     private final DbHelper dbHelper;
 
 
@@ -23,8 +24,6 @@ public class AuthDb implements Authentication {
 
     @Override
     public boolean registration(UserData user) {
-//        UserData userDb = getUserAuth(user.getLogin(), user.getPassword());
-
         if (isLoginExist(user.getLogin()) || isNickExists(user.getNick().getNick())) {
             return false;
         } else {
@@ -36,6 +35,11 @@ public class AuthDb implements Authentication {
     @Override
     public NickName updateNickname(NickName oldNick, NickName newNick) {
         return dbHelper.updateNick(oldNick, newNick);
+    }
+
+    @Override
+    public void close() {
+        dbHelper.disconnect();
     }
 
     private boolean isLoginExist(Login login) {

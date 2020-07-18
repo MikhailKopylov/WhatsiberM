@@ -160,6 +160,7 @@ public class ClientHandlerImpl implements ClientHandler {
         String message = token[2];
         Commands command = Commands.convertToCommand(token[0]);
         switch (Objects.requireNonNull(command)) {
+
             case PRIVATE_MESSAGE:
                 if (authentication.isNickExists(nickName)) {
                     server.sendMessagePrivate(message, this, nickName);
@@ -167,6 +168,7 @@ public class ClientHandlerImpl implements ClientHandler {
                     sendMessage(String.format("%s - такого пользователя не существует", nickName));
                 }
                 break;
+
             case CHANGE_NICK:
                 String oldNick = token[1];
                 String newNick = token[2];
@@ -197,6 +199,7 @@ public class ClientHandlerImpl implements ClientHandler {
             server.unsubscribe(this);
             server.broadcastMessage(String.format("%s покинул чат", user.getNick()));
             usersOnline.removeUserOnline(user);
+            authentication.close();
         } finally {
             try {
                 socket.close();

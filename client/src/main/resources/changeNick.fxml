@@ -8,13 +8,13 @@
     <Label text="Старый ник" />
     <TextField fx:id="oldNickField" editable="false"/>
     <Label text="Новый ник" />
-    <TextField fx:id="newNickField" promptText="новый ник" />
+    <TextField fx:id="newNickField" promptText="новый ник" onAction="#tryToChange"/>
 
 
     <TextArea fx:id="textArea" VBox.vgrow="ALWAYS" editable="false"/>
     <HBox>
         <Button text="Сменить" onAction="#tryToChange" minWidth="100"/>
-        <Button text="Отмена" onAction="#clickCancelBtn" minWidth="100"/>
+        <Button text="Закрыть" onAction="#clickCancelBtn" minWidth="100"/>
     </HBox>
 
 

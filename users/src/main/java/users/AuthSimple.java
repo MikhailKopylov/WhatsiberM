@@ -70,8 +70,12 @@ public class AuthSimple implements Authentication {
     }
 
     private void addNewUser(UserData user) {
-//        UserData user = new UserData(login, pass, nickName);
         userDataMap.put(user.getLogin(), user);
         nickNames.add(user.getNick());
+    }
+
+    @Override
+    public void close() {
+
     }
 }

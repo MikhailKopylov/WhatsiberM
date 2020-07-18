@@ -1,17 +1,10 @@
 import interfaces.Client;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import users.Login;
-import users.NickName;
-import users.Password;
-import users.UserData;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -56,7 +49,7 @@ public class ChangeNickController implements Initializable{
 //        nicknameField.clear();
 //    }
 
-    public void tryToChange(ActionEvent actionEvent) {
+    public void tryToChange() {
         String oldNick = oldNickField.getText();
         String newNick = newNickField.getText();
         if(newNick.split(Client.REGEX_SPLIT).length > 1){

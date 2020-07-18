@@ -1,0 +1,21 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox fx:controller="ChangeNickController"
+      xmlns:fx="http://javafx.com/fxml" alignment="center" >
+
+
+    <Label text="Старый ник" />
+    <TextField fx:id="oldNickField" editable="false"/>
+    <Label text="Новый ник" />
+    <TextField fx:id="newNickField" promptText="новый ник" />
+
+
+    <TextArea fx:id="textArea" VBox.vgrow="ALWAYS" editable="false"/>
+    <HBox>
+        <Button text="Сменить" onAction="#tryToChange" minWidth="100"/>
+        <Button text="Отмена" onAction="#clickCancelBtn" minWidth="100"/>
+    </HBox>
+
+
+</VBox>

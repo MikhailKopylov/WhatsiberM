@@ -121,4 +121,21 @@ public class DbHelper {
                 System.out.println("Not data");
         return false;
     }
+
+    public NickName updateNick(NickName oldNick, NickName newNick) {
+        String query = String.format("UPDATE users SET nickname = '%s' WHERE nickname = ?;",
+                newNick);
+        try {
+            prStatement = connection.prepareStatement(query);
+            prStatement.setString(1, oldNick.getNick());
+            prStatement.executeUpdate();
+            ResultSet resultSet = checkValueInDB(NICKNAME, newNick.getNick());
+            if(resultSet.next()){
+                return new NickName(resultSet.getString(NICKNAME));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
 }

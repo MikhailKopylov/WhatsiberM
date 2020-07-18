@@ -9,7 +9,9 @@
     </stylesheets>
     <top>
         <MenuBar>
-            <Menu text="Файл">
+            <Menu text="Меню">
+                <MenuItem fx:id="changeNickMenu" text="Сменить ник" disable="true" onAction="#changeNick"/>
+                <MenuItem text="Регистрация" onAction="#reg"/>
                 <MenuItem text="Выйти" onAction="#logout"/>
             </Menu>
         </MenuBar>

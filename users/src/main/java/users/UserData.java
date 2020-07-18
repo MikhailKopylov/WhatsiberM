@@ -28,6 +28,7 @@ public class UserData {
 //        return null;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,4 +42,6 @@ public class UserData {
     public int hashCode() {
         return Objects.hash(getLogin(), getPassword());
     }
+
+
 }

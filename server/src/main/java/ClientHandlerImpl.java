@@ -37,7 +37,7 @@ public class ClientHandlerImpl implements ClientHandler {
         this.server = server;
         this.socket = socket;
         this.usersOnline = usersOnline;
-        authentication =  new AuthDb();
+        authentication = new AuthDb();
 
         initializeStreams();
         Thread waitMessage = new Thread(() -> {
@@ -144,6 +144,16 @@ public class ClientHandlerImpl implements ClientHandler {
         exit();
     }
 
+    @Override
+    public UserData getUser() {
+        return user;
+    }
+
+    @Override
+    public void updateNickname(NickName newNickName) {
+        user = new UserData(user.getLogin(), user.getPassword(), newNickName);
+    }
+
     private void parseCommandMessage(String incomingMsg) {
         String[] token = incomingMsg.split(REGEX_SPLIT, 3);
         String nickName = token[1];
@@ -157,8 +167,23 @@ public class ClientHandlerImpl implements ClientHandler {
                     sendMessage(String.format("%s - такого пользователя не существует", nickName));
                 }
                 break;
-            case TRY_REG:
-
+            case CHANGE_NICK:
+                String oldNick = token[1];
+                String newNick = token[2];
+                if (authentication.isNickExists(newNick)) {
+                    sendMessage(Commands.CHANGE_NICK_WRONG.toString());
+                } else {
+                    NickName newNickname = authentication.updateNickname(new NickName(oldNick), new NickName(newNick));
+                    if (newNickname != null) {
+                        updateNickname(newNickname);
+                        sendMessage(String.format("%s %s",Commands.CHANGE_NICK_OK.toString(), newNick));
+                        server.broadcastMessage(String.format("%s поменял свой ник на %s",
+                                oldNick, newNick));
+                        server.broadcastUserList();
+                    } else {
+                        sendMessage(Commands.CHANGE_NICK_WRONG.toString());
+                    }
+                }
                 break;
 
             default:
@@ -200,16 +225,10 @@ public class ClientHandlerImpl implements ClientHandler {
     }
 
     private UserData authenticating(String incomingMsg) {
-
         String[] token = incomingMsg.split(REGEX_SPLIT);
         Login login = new Login(token[1]);
         Password pass = new Password(token[2]);
         return getAuthentication().getUserAuth(login, pass);
-
     }
 
-    @Override
-    public UserData getUser() {
-        return user;
-    }
 }

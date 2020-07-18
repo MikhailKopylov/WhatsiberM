@@ -72,7 +72,7 @@ public class ClientImpl implements Client {
                         return;
                     }
 
-                    if(commandMsg.startsWith(Commands.EXIT.toString())){
+                    if (commandMsg.startsWith(Commands.EXIT.toString())) {
                         controller.logout();
 //                        return;
                     }
@@ -98,16 +98,10 @@ public class ClientImpl implements Client {
                     String incomingMsg = in.readUTF();
 
                     if (incomingMsg.startsWith("/")) {
-                        if (incomingMsg.startsWith(Commands.USER_ONLINE.toString())) {
-                            String newUserNick = incomingMsg.split(REGEX_SPLIT)[1];
-                            controller.addNewMessage(String.format("%s в сети", newUserNick));
-                        } else if (incomingMsg.startsWith(Commands.EXIT.toString())) {
+                        if (incomingMsg.startsWith(Commands.EXIT.toString())) {
                             break;
-                        } else if (incomingMsg.startsWith(Commands.USER_LIST.toString())) {
-                            String[] token = incomingMsg.split(REGEX_SPLIT, 2);
-                            String[] users = token[1].split(REGEX_SPLIT);
-                            controller.updateUserList(users);
                         }
+                        parseCommandMsg(incomingMsg);
                     } else {
                         controller.addNewMessage(incomingMsg);
                     }
@@ -118,6 +112,27 @@ public class ClientImpl implements Client {
         });
         waitMessage.setDaemon(true);
         waitMessage.start();
+    }
+
+    private void parseCommandMsg(String incomingMsg) {
+
+        if (incomingMsg.startsWith(Commands.USER_ONLINE.toString())) {
+            String newUserNick = incomingMsg.split(REGEX_SPLIT)[1];
+            controller.addNewMessage(String.format("%s в сети", newUserNick));
+        } else if (incomingMsg.startsWith(Commands.USER_LIST.toString())) {
+            String[] token = incomingMsg.split(REGEX_SPLIT, 2);
+            String[] users = token[1].split(REGEX_SPLIT);
+            controller.updateUserList(users);
+        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_OK.toString())) {
+            String newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
+            controller.getChangeNickController().addMessage("Смена ника прошла успешно. Ваш новый ник: " + newNick);
+            nick = newNick;
+            controller.getChangeNickController().setNewNick(nick);
+        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_WRONG.toString())) {
+            String newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
+            controller.getChangeNickController().addMessage(newNick + " - такой ник уже используется. Введите другой вариант.");
+        }
+
     }
 
     @Override
@@ -148,4 +163,15 @@ public class ClientImpl implements Client {
         }
     }
 
+    @Override
+    public void tryToChangeNick(String oldNick, String newNick) {
+        if (socket != null && socket.isClosed()) {
+            connected();
+        }
+        try {
+            out.writeUTF(String.format("%s %s %s", Commands.CHANGE_NICK, oldNick, newNick));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

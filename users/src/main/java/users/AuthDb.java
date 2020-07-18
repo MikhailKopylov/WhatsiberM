@@ -33,6 +33,11 @@ public class AuthDb implements Authentication {
         }
     }
 
+    @Override
+    public NickName updateNickname(NickName oldNick, NickName newNick) {
+        return dbHelper.updateNick(oldNick, newNick);
+    }
+
     private boolean isLoginExist(Login login) {
         return dbHelper.isLoginExists(login);
     }

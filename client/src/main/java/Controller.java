@@ -16,6 +16,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+
+    @FXML
+    public MenuItem changeNickMenu;
     @FXML
     private HBox privateMessagePanel;
     @FXML
@@ -41,7 +44,9 @@ public class Controller implements Initializable {
 
     private Stage stage;
     private Stage regStage;
+    private Stage changeNickStage;
     private RegController regController;
+    private ChangeNickController changeNickController;
 
     private Client client;
 
@@ -117,6 +122,7 @@ public class Controller implements Initializable {
             Platform.runLater(() -> stage.setTitle(StartClient.TITLE + ": " + client.getNick()));
             chatTextArea.clear();
         }
+        changeNickMenu.setDisable(!authorized);
 
 
     }
@@ -174,6 +180,10 @@ public class Controller implements Initializable {
         return regController;
     }
 
+    public ChangeNickController getChangeNickController() {
+        return changeNickController;
+    }
+
     public void reg() {
         regController.clearFields();
         regStage.show();
@@ -181,5 +191,31 @@ public class Controller implements Initializable {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void changeNick(ActionEvent actionEvent) {
+        changeNickStage = createChangeNickStage();
+        changeNickStage.show();
+    }
+
+    private Stage createChangeNickStage() {
+        Stage stage = new Stage();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/changeNick.fxml"));
+            Parent root = loader.load();
+
+            stage.setTitle("Поменять ник");
+            stage.setScene(new Scene(root, 350, 250));
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            changeNickController = loader.getController();
+            changeNickController.setClient(client);
+//            regController.setClient(client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+
     }
 }

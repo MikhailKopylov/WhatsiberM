@@ -51,6 +51,24 @@ public class AuthSimple implements Authentication {
         return true;
     }
 
+    @Override
+    public NickName updateNickname(NickName oldNick, NickName newNick) {
+        UserData userOldNick = null;
+        for (UserData userData : userDataMap.values()) {
+            if(userData.getNick().toString().equals(oldNick.getNick())){
+                userOldNick = userData;
+            }
+        }
+        assert userOldNick != null;
+        UserData userNewNick = new UserData(userOldNick.getLogin(), userOldNick.getPassword(), newNick);
+        userDataMap.remove(userOldNick.getLogin());
+        nickNames.remove(oldNick);
+
+        userDataMap.put(userNewNick.getLogin(), userNewNick);
+        nickNames.add(newNick);
+        return newNick;
+    }
+
     private void addNewUser(UserData user) {
 //        UserData user = new UserData(login, pass, nickName);
         userDataMap.put(user.getLogin(), user);

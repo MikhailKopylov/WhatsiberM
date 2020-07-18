@@ -10,7 +10,7 @@ public class Login {
         this.login = login;
     }
 
-    String getLogin() {
+    public String getLogin() {
         return login;
     }
 

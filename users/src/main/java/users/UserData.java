@@ -17,7 +17,7 @@ public class UserData {
         return login;
     }
 
-    Password getPassword() {
+    public Password getPassword() {
         return password;
     }
 

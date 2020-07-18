@@ -37,7 +37,7 @@ public class ClientHandlerImpl implements ClientHandler {
         this.server = server;
         this.socket = socket;
         this.usersOnline = usersOnline;
-        authentication =  new AuthSimple();
+        authentication =  new AuthDb();
 
         initializeStreams();
         Thread waitMessage = new Thread(() -> {
@@ -82,7 +82,8 @@ public class ClientHandlerImpl implements ClientHandler {
                 if (authMsg.startsWith(Commands.TRY_REG.toString())) {
                     String[] token = authMsg.split(REGEX_SPLIT);
                     if (token.length >= 4) {
-                        if (authentication.registration(new Login(token[1]), new Password(token[2]), new NickName(token[3]))) {
+                        if (authentication.registration(new UserData
+                                (new Login(token[1]), new Password(token[2]), new NickName(token[3])))) {
                             sendMessage(Commands.REG_OK.toString());
                         } else {
                             sendMessage(Commands.REG_WRONG.toString());
@@ -125,6 +126,7 @@ public class ClientHandlerImpl implements ClientHandler {
     public void readIncomingMessage() {
         while (true) {
             try {
+                socket.setSoTimeout(0);
                 String incomingMsg = in.readUTF();
                 if (incomingMsg.startsWith("/")) {
                     if (incomingMsg.startsWith(Commands.EXIT.toString())) {
@@ -149,7 +151,7 @@ public class ClientHandlerImpl implements ClientHandler {
         Commands command = Commands.convertToCommand(token[0]);
         switch (Objects.requireNonNull(command)) {
             case PRIVATE_MESSAGE:
-                if (authentication.isUserExists(nickName)) {
+                if (authentication.isNickExists(nickName)) {
                     server.sendMessagePrivate(message, this, nickName);
                 } else {
                     sendMessage(String.format("%s - такого пользователя не существует", nickName));

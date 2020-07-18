@@ -17,7 +17,7 @@ public class AuthSimple implements Authentication {
 
         for (int i = 1; i <= 10; i++) {
             NickName nickName = new NickName("user" + i);
-            addNewUser(new Login("l" + i), new Password("p" + i), nickName);
+            addNewUser(new UserData(new Login("l" + i), new Password("p" + i), nickName));
         }
     }
 
@@ -33,7 +33,7 @@ public class AuthSimple implements Authentication {
     }
 
     @Override
-    public boolean isUserExists(String nickName) {
+    public boolean isNickExists(String nickName) {
         for (UserData userData : userDataMap.values()) {
             if(userData.getNick().toString().equals(nickName)){
                 return true;
@@ -43,17 +43,17 @@ public class AuthSimple implements Authentication {
     }
 
     @Override
-    public boolean registration(Login login, Password pass, NickName nickName) {
-        if(userDataMap.get(login) != null || nickNames.contains(nickName)) {
+    public boolean registration(UserData user) {
+        if(userDataMap.get(user.getLogin()) != null || nickNames.contains(user.getNick())) {
             return false;
         }
-        addNewUser(login, pass, nickName);
+        addNewUser(user);
         return true;
     }
 
-    private void addNewUser(Login login, Password pass, NickName nickName) {
-        UserData user = new UserData(login, pass, nickName);
+    private void addNewUser(UserData user) {
+//        UserData user = new UserData(login, pass, nickName);
         userDataMap.put(user.getLogin(), user);
-        nickNames.add(nickName);
+        nickNames.add(user.getNick());
     }
 }

@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 
 public class ClientImpl implements Client {
@@ -67,7 +68,7 @@ public class ClientImpl implements Client {
                     String commandMsg;
                     try {
                         commandMsg = in.readUTF();
-                    } catch (EOFException e) {
+                    } catch (EOFException | SocketException e) {
                         return;
                     }
 

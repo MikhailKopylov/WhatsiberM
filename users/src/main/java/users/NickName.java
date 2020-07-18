@@ -10,7 +10,7 @@ public class NickName {
         this.nick = nick;
     }
 
-    String getNick() {
+    public String getNick() {
         return nick;
     }
 

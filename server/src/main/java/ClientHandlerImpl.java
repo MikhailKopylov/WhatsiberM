@@ -1,7 +1,4 @@
-import interfaces.Authentication;
-import interfaces.ClientHandler;
-import interfaces.Server;
-import interfaces.UsersOnline;
+import interfaces.*;
 import users.*;
 
 import java.io.DataInputStream;
@@ -25,6 +22,7 @@ public class ClientHandlerImpl implements ClientHandler {
     private DataInputStream in;
 
     private final Authentication authentication;
+    private final SaveMessageService saveMessage;
     private final UsersOnline usersOnline;
     private UserData user;
 
@@ -38,6 +36,7 @@ public class ClientHandlerImpl implements ClientHandler {
         this.socket = socket;
         this.usersOnline = usersOnline;
         authentication = new AuthDb();
+        saveMessage = new SaveMsgServiceDB();
 
         initializeStreams();
         Thread waitMessage = new Thread(() -> {
@@ -136,6 +135,7 @@ public class ClientHandlerImpl implements ClientHandler {
                     }
                 } else {
                     server.broadcastMessage(user.getNick() + ": " + incomingMsg);
+                    saveMessage.saveBroadcastMsg(user, incomingMsg);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,6 +164,7 @@ public class ClientHandlerImpl implements ClientHandler {
             case PRIVATE_MESSAGE:
                 if (authentication.isNickExists(nickName)) {
                     server.sendMessagePrivate(message, this, nickName);
+                    saveMessage.savePrivateMsg(user, new NickName(nickName), message);
                 } else {
                     sendMessage(String.format("%s - такого пользователя не существует", nickName));
                 }

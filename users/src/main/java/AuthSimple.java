@@ -1,6 +1,8 @@
-package users;
-
 import interfaces.Authentication;
+import users.Login;
+import users.NickName;
+import users.Password;
+import users.UserData;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,7 +1,9 @@
-package users;
-
 import database.DbHelper;
 import interfaces.Authentication;
+import users.Login;
+import users.NickName;
+import users.Password;
+import users.UserData;
 
 public class AuthDb implements Authentication {
 

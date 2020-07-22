@@ -16,4 +16,10 @@ public interface Client {
     void tryToReg(UserData user, Password password);
 
     void tryToChangeNick(String oldNick, String newNick);
+
+//    void saveSendMessageLocal(String message);
+    void saveMessageLocal(String nick, String message);
+    void savePrivateMessageLocal(String sender, String recipient, String message);
+
+    void setLogin(String login);
 }

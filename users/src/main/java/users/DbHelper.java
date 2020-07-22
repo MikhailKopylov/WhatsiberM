@@ -1,9 +1,4 @@
-package database;
-
-import users.Login;
-import users.NickName;
-import users.Password;
-import users.UserData;
+package users;
 
 import java.sql.*;
 
@@ -49,7 +44,7 @@ public class DbHelper {
 
     public UserData getLogin(Login login, Password password) {
         try {
-            ResultSet resultSet = prepareGetUser(login.getLogin(), password.getPassword());
+            ResultSet resultSet = prepareGetUser(login.toString(), password.getPassword());
             if (!resultSet.next()) {
                 System.out.println("Not data");
                 return null;
@@ -104,7 +99,7 @@ public class DbHelper {
                 LOGIN, PASSWORD, NICKNAME);
         try {
             prStatement = connection.prepareStatement(query);
-            prStatement.setString(1, user.getLogin().getLogin());
+            prStatement.setString(1, user.getLogin().toString());
             prStatement.setString(2, user.getPassword().getPassword());
             prStatement.setString(3, user.getNick().getNick());
             prStatement.executeUpdate();
@@ -115,7 +110,7 @@ public class DbHelper {
 
     public boolean isLoginExists(Login login) {
         try {
-            ResultSet resultSet = checkValueInDB(LOGIN, login.getLogin());
+            ResultSet resultSet = checkValueInDB(LOGIN, login.toString());
             if (resultSet.next()) {
                 return true;
             }

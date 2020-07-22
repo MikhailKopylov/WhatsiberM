@@ -1,4 +1,4 @@
-import database.DbHelper;
+import users.DbHelper;
 import interfaces.SaveMessageService;
 import users.NickName;
 import users.UserData;

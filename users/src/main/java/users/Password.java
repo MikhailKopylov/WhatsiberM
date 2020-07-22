@@ -10,7 +10,7 @@ public class Password {
         this.password = password;
     }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 

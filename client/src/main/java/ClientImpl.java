@@ -1,6 +1,7 @@
+import intefaces.BroadcastMsg;
 import interfaces.Client;
-import users.Password;
-import users.UserData;
+import interfaces.SaveHistory;
+import users.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +9,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -23,6 +25,11 @@ public class ClientImpl implements Client {
     private DataOutputStream out;
 
     private String nick;
+    private String login;
+    private PublicUserData user = null;
+
+    private BroadcastMsg broadcastMsg;
+    private SaveHistory saveHistory;
 
     public ClientImpl(Controller controller) {
         this.controller = controller;
@@ -80,6 +87,7 @@ public class ClientImpl implements Client {
                         nick = commandMsg.split(REGEX_SPLIT)[1];
                         controller.addNewMessage(String.format("%s в сети", nick));
                         controller.setAuthorized(true);
+                        user = new PublicUserData(new Login(login), new NickName(nick));
                         break;
                     }
                     parseAuthRegCommand(commandMsg);
@@ -95,6 +103,9 @@ public class ClientImpl implements Client {
                         parseCommandMsg(incomingMsg);
                     } else {
                         controller.addNewMessage(incomingMsg);
+                        String[] token = incomingMsg.split(REGEX_SPLIT);
+                        saveMessageLocal(token[0], token[1]);
+
                     }
                 }
             } catch (IOException e) {
@@ -139,6 +150,7 @@ public class ClientImpl implements Client {
     private void parseCommandMsg(String incomingMsg) {
         String commandStr = incomingMsg.split(REGEX_SPLIT, 2)[0];
         Commands command = Commands.convertToCommand(commandStr);
+        String[] token;
         switch (Objects.requireNonNull(command)) {
 
             case USER_ONLINE:
@@ -147,7 +159,7 @@ public class ClientImpl implements Client {
                 break;
 
             case USER_LIST:
-                String[] token = incomingMsg.split(REGEX_SPLIT, 2);
+                token = incomingMsg.split(REGEX_SPLIT, 2);
                 String[] users = token[1].split(REGEX_SPLIT);
                 controller.updateUserList(users);
                 break;
@@ -164,6 +176,13 @@ public class ClientImpl implements Client {
                 controller.getChangeNickController()
                         .addMessage(newNick + " - такой ник уже используется. Введите другой вариант.");
                 break;
+            case PRIVATE_MESSAGE:
+                token = incomingMsg.split(REGEX_SPLIT, 4);
+                String sender = token[1];
+                String recipient = token[2];
+                String message = token[3];
+                savePrivateMessageLocal(sender, recipient, message);
+                controller.addNewMessage(message);
         }
 //        if (incomingMsg.startsWith(Commands.USER_ONLINE.toString())) {
 //        } else if (incomingMsg.startsWith(Commands.USER_LIST.toString())) {
@@ -211,5 +230,39 @@ public class ClientImpl implements Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+//    @Override
+//    public void saveSendMessageLocal(String message) {
+//        saveHistory = createLocalHistory();
+//        saveHistory.saveBroadcastMessage(new MessageAll(user, new Date(), message));
+//    }
+
+    private SaveHistory getLocalHistory() {
+        if(saveHistory == null) {
+            return new SaveHistoryLocal(user);
+        } else {
+            return saveHistory;
+        }
+    }
+
+    @Override
+    public void saveMessageLocal(String nick, String message) {
+        saveHistory = getLocalHistory();
+        saveHistory.saveBroadcastMessage(new BroadcastMsgLocal(new PublicUserData(new NickName(nick)),new Date(), message));
+    }
+
+    @Override
+    public void savePrivateMessageLocal(String senderNick,String recipientNick,  String message) {
+        saveHistory = getLocalHistory();
+        NickName sender = new NickName(senderNick);
+        NickName recipient = new NickName(recipientNick);
+        PublicUserData user = saveHistory.getUser();
+        saveHistory.savePrivateMessage(new PrivateMsgLocal(sender, recipient, user,  message, new Date()));
+    }
+
+    @Override
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

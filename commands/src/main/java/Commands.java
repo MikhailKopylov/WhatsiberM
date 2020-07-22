@@ -8,6 +8,7 @@ public enum Commands {
     CHANGE_NICK_WRONG("/changeNickWrong"),
     EXIT("/end"),
 //    EXISTS_NICK("/existsNick"),
+    MSG_ALL("/msgAll"),
     ONLINE_WRONG("/onlineWrong"),
     PRIVATE_MESSAGE("/privateMsg"),
     REG_OK("/regOk"),

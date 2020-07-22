@@ -89,7 +89,9 @@ public class Controller implements Initializable {
 
 
     public void sendMessage(ActionEvent actionEvent) {
-        client.sendMessage(newMsgTextField.getText());
+        String message = newMsgTextField.getText();
+        client.sendMessage(message);
+//        client.saveSendMessageLocal(message);
         newMsgTextField.clear();
         newMsgTextField.requestFocus();
     }
@@ -103,6 +105,7 @@ public class Controller implements Initializable {
         String pass = passTextField.getText();
         if (!login.isEmpty() && !pass.isEmpty()) {
             client.sendMessage(String.format("%s %s %s", Commands.CHECK_AUTH, login, pass));
+            client.setLogin(login);
             passTextField.clear();
         }
     }

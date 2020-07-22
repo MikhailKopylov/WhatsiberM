@@ -1,4 +1,4 @@
-import database.DbHelper;
+import users.DbHelper;
 import interfaces.Authentication;
 import users.Login;
 import users.NickName;

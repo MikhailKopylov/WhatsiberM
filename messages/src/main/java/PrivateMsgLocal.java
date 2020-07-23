@@ -22,12 +22,12 @@ public class PrivateMsgLocal implements PrivateMsg {
 
     @Override
     public String getTextMessage() {
-        return null;
+        return textMsg;/*String.format("личное сообщение от %s для %s: %s", sender, recipient, textMsg)*/
     }
 
     @Override
     public Date getDateMessage() {
-        return null;
+        return dateMessage;
     }
 
     @Override

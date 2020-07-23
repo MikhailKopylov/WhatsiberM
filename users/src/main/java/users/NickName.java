@@ -1,8 +1,9 @@
 package users;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class NickName {
+public class NickName implements Serializable {
 
     private final String nick;
 

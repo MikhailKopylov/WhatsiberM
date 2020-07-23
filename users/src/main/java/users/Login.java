@@ -1,8 +1,9 @@
 package users;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Login {
+public class Login implements Serializable {
 
     private final String login;
 

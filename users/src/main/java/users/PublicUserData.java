@@ -1,15 +1,17 @@
 package users;
 
-public class PublicUserData {
+import java.io.Serializable;
+
+public class PublicUserData implements Serializable {
 
 //    private UserData userData;
     private Login login;
     private NickName nickName;
 
-    public PublicUserData(UserData userData) {
-        login = userData.getLogin();
-        nickName = userData.getNick();
-    }
+//    public PublicUserData(UserData userData) {
+//        login = userData.getLogin();
+//        nickName = userData.getNick();
+//    }
 
     public PublicUserData(NickName nickName) {
         this(null, nickName);

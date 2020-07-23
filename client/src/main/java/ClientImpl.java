@@ -17,6 +17,7 @@ public class ClientImpl implements Client {
 
     private static final int PORT = 8181;
     private static final String IP_ADDRESS = "localhost";
+    public static final int CONT_LAST_MESSAGES = 100;
 
     private final Controller controller;
 
@@ -33,6 +34,7 @@ public class ClientImpl implements Client {
 
     public ClientImpl(Controller controller) {
         this.controller = controller;
+
         connected();
         readIncomingMessage();
     }
@@ -88,6 +90,8 @@ public class ClientImpl implements Client {
                         controller.addNewMessage(String.format("%s в сети", nick));
                         controller.setAuthorized(true);
                         user = new PublicUserData(new Login(login), new NickName(nick));
+                        saveHistory = new SaveHistoryLocal(user);
+                        controller.addListMessage(saveHistory.getLastMessages(CONT_LAST_MESSAGES));
                         break;
                     }
                     parseAuthRegCommand(commandMsg);

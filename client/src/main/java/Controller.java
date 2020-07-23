@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -219,5 +220,11 @@ public class Controller implements Initializable {
         }
         return stage;
 
+    }
+
+    public void addListMessage(List<String> lastMessages) {
+        for (String lastMessage : lastMessages) {
+            chatTextArea.appendText(lastMessage + "\n");
+        }
     }
 }

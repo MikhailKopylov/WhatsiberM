@@ -6,11 +6,11 @@ import java.util.Date;
 
 public class PrivateMsgLocal implements PrivateMsg {
 
-    private NickName sender;
-    private NickName recipient;
-    private PublicUserData user;
-    private String textMsg;
-    private Date dateMessage;
+    private final NickName sender;
+    private final NickName recipient;
+    private final PublicUserData user;
+    private final String textMsg;
+    private final Date dateMessage;
 
     public PrivateMsgLocal(NickName sender, NickName recipient, PublicUserData user, String textMsg, Date dateMessage) {
         this.sender = sender;

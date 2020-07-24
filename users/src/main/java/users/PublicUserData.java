@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class PublicUserData implements Serializable {
 
 //    private UserData userData;
-    private Login login;
-    private NickName nickName;
+    private final Login login;
+    private final NickName nickName;
 
 //    public PublicUserData(UserData userData) {
 //        login = userData.getLogin();

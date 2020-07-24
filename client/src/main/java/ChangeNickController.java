@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class ChangeNickController implements Initializable{
+class ChangeNickController implements Initializable{
 
     @FXML
     public TextField oldNickField;
@@ -38,7 +38,7 @@ public class ChangeNickController implements Initializable{
         textArea.appendText(msg+"\n");
     }
 
-    public void clickCancelBtn() {
+    void clickCancelBtn() {
         Platform.runLater(() -> ((Stage) oldNickField.getScene().getWindow()).close());
     }
 

@@ -1,5 +1,4 @@
 import intefaces.BroadcastMsg;
-import intefaces.Message;
 import intefaces.PrivateMsg;
 import interfaces.SaveHistory;
 import users.PublicUserData;
@@ -9,21 +8,15 @@ import java.util.*;
 
 public class SaveHistoryLocal implements SaveHistory {
 
-    private PublicUserData user;
+    private final PublicUserData user;
 
     private String nameDirectory;
-    private String fileNameAll;
-    private String fileNamePrivet;
 
     private File fileLocalHistory;
-    private File localHistoryPrivate;
-    private File directoryLocalHistory;
 
-    private Map<Date, Message> messageMap;
 
     public SaveHistoryLocal(PublicUserData user) {
         this.user = user;
-        messageMap = new TreeMap<>();
         createDirectory();
         createFile(user.getLogin().toString());
     }
@@ -176,7 +169,7 @@ public class SaveHistoryLocal implements SaveHistory {
     }
 
     private void createFile(String login) {
-        fileNameAll = String.format("%s/history_%s.txt", nameDirectory, login);
+        String fileNameAll = String.format("%s/history_%s.txt", nameDirectory, login);
 //        fileNamePrivet = String.format("%s/history_%s_p.txt", nameDirectory, login);
         fileLocalHistory = new File(fileNameAll);
 //        localHistoryPrivate = new File(fileNamePrivet);
@@ -200,7 +193,7 @@ public class SaveHistoryLocal implements SaveHistory {
 
     private void createDirectory() {
         nameDirectory = ".localHistory";
-        directoryLocalHistory = new File(nameDirectory);
+        File directoryLocalHistory = new File(nameDirectory);
         if (!directoryLocalHistory.exists()) {
             directoryLocalHistory.mkdir();
         }

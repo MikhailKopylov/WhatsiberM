@@ -6,9 +6,9 @@ import java.util.Date;
 
 public class BroadcastMsgLocal implements BroadcastMsg {
 
-    private PublicUserData sender;
-    private String textMsg;
-    private Date dateMessage;
+    private final PublicUserData sender;
+    private final String textMsg;
+    private final Date dateMessage;
 
     public BroadcastMsgLocal(PublicUserData sender, Date dateMessage, String textMsg) {
         this.sender = sender;

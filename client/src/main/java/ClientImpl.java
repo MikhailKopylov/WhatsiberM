@@ -1,4 +1,3 @@
-import intefaces.BroadcastMsg;
 import interfaces.Client;
 import interfaces.SaveHistory;
 import users.*;
@@ -29,7 +28,6 @@ public class ClientImpl implements Client {
     private String login;
     private PublicUserData user = null;
 
-    private BroadcastMsg broadcastMsg;
     private SaveHistory saveHistory;
 
     public ClientImpl(Controller controller) {

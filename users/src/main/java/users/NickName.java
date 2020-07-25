@@ -1,8 +1,9 @@
 package users;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class NickName {
+public class NickName implements Serializable {
 
     private final String nick;
 
@@ -10,7 +11,7 @@ public class NickName {
         this.nick = nick;
     }
 
-    String getNick() {
+    public String getNick() {
         return nick;
     }
 

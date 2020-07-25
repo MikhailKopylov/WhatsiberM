@@ -17,7 +17,7 @@ public class UserData {
         return login;
     }
 
-    Password getPassword() {
+    public Password getPassword() {
         return password;
     }
 
@@ -27,6 +27,7 @@ public class UserData {
 //        }
 //        return null;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -41,4 +42,6 @@ public class UserData {
     public int hashCode() {
         return Objects.hash(getLogin(), getPassword());
     }
+
+
 }

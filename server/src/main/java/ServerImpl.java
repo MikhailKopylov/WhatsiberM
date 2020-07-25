@@ -46,15 +46,19 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void sendMessagePrivate(String message, ClientHandler senderClinet, String nickRecipient) {
+    public void sendMessagePrivate(String message, ClientHandler senderClient, String nickRecipient) {
         ClientHandler recipientClient = findClientHandler(nickRecipient);
+        String nickSender = senderClient.getUser().getNick().toString();
         if (recipientClient != null && (usersOnline.isUserOnline(recipientClient.getUser()))) {
-                senderClinet.sendMessage(String.format("личное сообщение для %s : %s", nickRecipient, message));
-            if (!senderClinet.equals(recipientClient)) {
-                recipientClient.sendMessage(String.format("личное сообщение от %s : %s", senderClinet.getUser().getNick(), message));
+            String format = String.format("%s %s %s %s отправил личное сообщение для %s : %s",
+                    Commands.PRIVATE_MESSAGE, nickSender, nickRecipient,
+                    nickSender, nickRecipient, message);
+            senderClient.sendMessage(format);
+            if (!senderClient.equals(recipientClient)) {
+                recipientClient.sendMessage(format);
             }
         } else {
-                senderClinet.sendMessage(String.format("%s не в сети", nickRecipient));
+            senderClient.sendMessage(String.format("%s не в сети", nickRecipient));
         }
     }
 
@@ -90,7 +94,7 @@ public class ServerImpl implements Server {
             builder.append(client.getUser().getNick()).append(" ");
         }
 
-        String message =builder.toString();
+        String message = builder.toString();
 
         for (ClientHandler client : clients) {
             client.sendMessage(message);

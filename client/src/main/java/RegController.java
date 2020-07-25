@@ -47,8 +47,8 @@ public class RegController {
     public void clickCancelBtn() {
         Platform.runLater(() -> ((Stage) loginField.getScene().getWindow()).close());
     }
+
     public void addMessage(String msg) {
-        Platform.runLater(() -> label.setText("New Value"));
         textArea.appendText(msg+"\n");
     }
 

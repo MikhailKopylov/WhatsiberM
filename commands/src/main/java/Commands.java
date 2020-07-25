@@ -1,8 +1,21 @@
 public enum Commands {
 
-    EXIT("/end"), CHECK_AUTH("/auth"), AUTH_OK("/authOK"), AUTH_WRONG("/authWrong"), PRIVATE_MESSAGE("/privateMsg"),
-    TRY_REG("/reg"), REG_OK("/regOk"), REG_WRONG("/regWrong"),
-    USER_LIST("/userlist"), USER_ONLINE("/userOnline"), ONLINE_WRONG("/onlineWrong");
+    AUTH_OK("/authOK"),
+    AUTH_WRONG("/authWrong"),
+    CHECK_AUTH("/auth"),
+    CHANGE_NICK("/changeNick"),
+    CHANGE_NICK_OK("/changeNickOK"),
+    CHANGE_NICK_WRONG("/changeNickWrong"),
+    EXIT("/end"),
+//    EXISTS_NICK("/existsNick"),
+    MSG_ALL("/msgAll"),
+    ONLINE_WRONG("/onlineWrong"),
+    PRIVATE_MESSAGE("/privateMsg"),
+    REG_OK("/regOk"),
+    REG_WRONG("/regWrong"),
+    TRY_REG("/reg"),
+    USER_LIST("/userList"),
+    USER_ONLINE("/userOnline");
 
 
     private final String command;

@@ -1,8 +1,9 @@
 package users;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Login {
+public class Login implements Serializable {
 
     private final String login;
 
@@ -10,25 +11,25 @@ public class Login {
         this.login = login;
     }
 
-    String getLogin() {
+    @Override
+    public String toString() {
         return login;
     }
+
+
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Login)) return false;
         Login login1 = (Login) o;
-        return getLogin().equals(login1.getLogin());
+        return toString().equals(login1.toString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLogin());
+        return Objects.hash(toString());
     }
 
-    @Override
-    public String toString() {
-        return login ;
-    }
 }

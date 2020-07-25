@@ -1,7 +1,4 @@
-import interfaces.Authentication;
-import interfaces.ClientHandler;
-import interfaces.Server;
-import interfaces.UsersOnline;
+import interfaces.*;
 import users.*;
 
 import java.io.DataInputStream;
@@ -25,6 +22,7 @@ public class ClientHandlerImpl implements ClientHandler {
     private DataInputStream in;
 
     private final Authentication authentication;
+    private final SaveMessageService saveMessage;
     private final UsersOnline usersOnline;
     private UserData user;
 
@@ -37,7 +35,8 @@ public class ClientHandlerImpl implements ClientHandler {
         this.server = server;
         this.socket = socket;
         this.usersOnline = usersOnline;
-        authentication =  new AuthSimple();
+        authentication = new AuthDb();
+        saveMessage = new SaveMsgServiceDB();
 
         initializeStreams();
         Thread waitMessage = new Thread(() -> {
@@ -82,7 +81,8 @@ public class ClientHandlerImpl implements ClientHandler {
                 if (authMsg.startsWith(Commands.TRY_REG.toString())) {
                     String[] token = authMsg.split(REGEX_SPLIT);
                     if (token.length >= 4) {
-                        if (authentication.registration(new Login(token[1]), new Password(token[2]), new NickName(token[3]))) {
+                        if (authentication.registration(new UserData
+                                (new Login(token[1]), new Password(token[2]), new NickName(token[3])))) {
                             sendMessage(Commands.REG_OK.toString());
                         } else {
                             sendMessage(Commands.REG_WRONG.toString());
@@ -125,6 +125,7 @@ public class ClientHandlerImpl implements ClientHandler {
     public void readIncomingMessage() {
         while (true) {
             try {
+                socket.setSoTimeout(0);
                 String incomingMsg = in.readUTF();
                 if (incomingMsg.startsWith("/")) {
                     if (incomingMsg.startsWith(Commands.EXIT.toString())) {
@@ -134,6 +135,7 @@ public class ClientHandlerImpl implements ClientHandler {
                     }
                 } else {
                     server.broadcastMessage(user.getNick() + ": " + incomingMsg);
+                    saveMessage.saveBroadcastMsg(user, incomingMsg);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -142,21 +144,49 @@ public class ClientHandlerImpl implements ClientHandler {
         exit();
     }
 
+    @Override
+    public UserData getUser() {
+        return user;
+    }
+
+    @Override
+    public void updateNickname(NickName newNickName) {
+        user = new UserData(user.getLogin(), user.getPassword(), newNickName);
+    }
+
     private void parseCommandMessage(String incomingMsg) {
         String[] token = incomingMsg.split(REGEX_SPLIT, 3);
         String nickName = token[1];
         String message = token[2];
         Commands command = Commands.convertToCommand(token[0]);
         switch (Objects.requireNonNull(command)) {
+
             case PRIVATE_MESSAGE:
-                if (authentication.isUserExists(nickName)) {
+                if (authentication.isNickExists(nickName)) {
                     server.sendMessagePrivate(message, this, nickName);
+                    saveMessage.savePrivateMsg(user, new NickName(nickName), message);
                 } else {
                     sendMessage(String.format("%s - такого пользователя не существует", nickName));
                 }
                 break;
-            case TRY_REG:
 
+            case CHANGE_NICK:
+                String oldNick = token[1];
+                String newNick = token[2];
+                if (authentication.isNickExists(newNick)) {
+                    sendMessage(Commands.CHANGE_NICK_WRONG.toString());
+                } else {
+                    NickName newNickname = authentication.updateNickname(new NickName(oldNick), new NickName(newNick));
+                    if (newNickname != null) {
+                        updateNickname(newNickname);
+                        sendMessage(String.format("%s %s",Commands.CHANGE_NICK_OK.toString(), newNick));
+                        server.broadcastMessage(String.format("%s поменял свой ник на %s",
+                                oldNick, newNick));
+                        server.broadcastUserList();
+                    } else {
+                        sendMessage(Commands.CHANGE_NICK_WRONG.toString());
+                    }
+                }
                 break;
 
             default:
@@ -170,6 +200,7 @@ public class ClientHandlerImpl implements ClientHandler {
             server.unsubscribe(this);
             server.broadcastMessage(String.format("%s покинул чат", user.getNick()));
             usersOnline.removeUserOnline(user);
+            authentication.close();
         } finally {
             try {
                 socket.close();
@@ -198,16 +229,10 @@ public class ClientHandlerImpl implements ClientHandler {
     }
 
     private UserData authenticating(String incomingMsg) {
-
         String[] token = incomingMsg.split(REGEX_SPLIT);
         Login login = new Login(token[1]);
         Password pass = new Password(token[2]);
         return getAuthentication().getUserAuth(login, pass);
-
     }
 
-    @Override
-    public UserData getUser() {
-        return user;
-    }
 }

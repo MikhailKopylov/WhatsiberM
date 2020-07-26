@@ -3,9 +3,4 @@ user1 отправил личное сообщение для user3 : 12421421
 user3 отправил личное сообщение для user1 : wefggqwreg
 user3 отправил личное сообщение для user2 : aergaerag
 user3 отправил личное сообщение для user3 : aergaergaerg
-user1:: привет
-user1: покинул
-user3:: 46789
-user2: покинул
-user3:: ewefwe
-user2: покинул
+user1:: qwertyyyyyy

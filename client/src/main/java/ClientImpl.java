@@ -1,3 +1,4 @@
+import com.sun.org.apache.regexp.internal.RE;
 import interfaces.Client;
 import interfaces.SaveHistory;
 import users.*;
@@ -145,6 +146,9 @@ public class ClientImpl implements Client {
                 String nickOnlineWrong = commandMsg.split(REGEX_SPLIT)[1];
                 controller.addNewMessage(String.format("%s уже в сети", nickOnlineWrong));
                 break;
+            case USER_OUTLINE:
+                String userOutline = commandMsg.split(REGEX_SPLIT)[1];
+                controller.addNewMessage(userOutline);
         }
 //        if (commandMsg.startsWith(Commands.AUTH_WRONG.toString())) {
 //        } else if (commandMsg.startsWith(Commands.REG_OK.toString())) {

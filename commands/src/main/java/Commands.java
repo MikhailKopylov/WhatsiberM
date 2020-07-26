@@ -15,6 +15,7 @@ public enum Commands {
     REG_WRONG("/regWrong"),
     TRY_REG("/reg"),
     USER_LIST("/userList"),
+    USER_OUTLINE("/userOutline"),
     USER_ONLINE("/userOnline");
 
 

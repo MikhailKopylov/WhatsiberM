@@ -4,8 +4,4 @@ user1 отправил личное сообщение для user2 : 124124
 user3 отправил личное сообщение для user2 : aergaerag
 user1:: привет
 user2 отправил личное сообщение для user1 : 123
-user1: покинул
-user3:: 46789
-user3: покинул
-user3:: ewefwe
-user3: покинул
+user1:: qwertyyyyyy

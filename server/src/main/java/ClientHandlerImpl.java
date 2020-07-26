@@ -202,7 +202,7 @@ public class ClientHandlerImpl implements ClientHandler, Runnable {
         try {
             sendMessage(Commands.EXIT.toString());
             server.unsubscribe(this);
-            server.broadcastMessage(String.format("%s покинул чат", user.getNick()));
+            server.broadcastMessage(String.format("%s %s покинул чат", Commands.USER_OUTLINE,  user.getNick()));
             usersOnline.removeUserOnline(user);
             authentication.close();
         } finally {

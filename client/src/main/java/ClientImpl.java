@@ -106,7 +106,11 @@ public class ClientImpl implements Client {
                     } else {
                         controller.addNewMessage(incomingMsg);
                         String[] token = incomingMsg.split(REGEX_SPLIT);
-                        saveMessageLocal(token[0], token[1]);
+                        if(token.length >= 2) {
+                            saveMessageLocal(token[0], token[1]);
+                        } else {
+                            System.out.println(incomingMsg);
+                        }
 
                     }
                 }

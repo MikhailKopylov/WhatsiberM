@@ -11,7 +11,7 @@ import java.util.Objects;
 //import static Commands.*;
 
 
-public class ClientHandlerImpl implements ClientHandler {
+public class ClientHandlerImpl implements ClientHandler, Runnable {
 
     public static final String REGEX_SPLIT = "\\s+";
     public static final int TIMEOUT = 120_000;
@@ -39,17 +39,21 @@ public class ClientHandlerImpl implements ClientHandler {
         saveMessage = new SaveMsgServiceDB();
 
         initializeStreams();
-        Thread waitMessage = new Thread(() -> {
-            if (checkAuthenticating()) {
-                readIncomingMessage();
-            } else {
-                exitNotReg();
-            }
-        });
-        waitMessage.setDaemon(true);
-        waitMessage.start();
+//        Thread waitMessage = new Thread(() -> {
+//        });
+//        waitMessage.setDaemon(true);
+//        waitMessage.start();
     }
 
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName());
+        if (checkAuthenticating()) {
+            readIncomingMessage();
+        } else {
+            exitNotReg();
+        }
+    }
 
     private void initializeStreams() {
         try {
@@ -179,7 +183,7 @@ public class ClientHandlerImpl implements ClientHandler {
                     NickName newNickname = authentication.updateNickname(new NickName(oldNick), new NickName(newNick));
                     if (newNickname != null) {
                         updateNickname(newNickname);
-                        sendMessage(String.format("%s %s",Commands.CHANGE_NICK_OK.toString(), newNick));
+                        sendMessage(String.format("%s %s", Commands.CHANGE_NICK_OK.toString(), newNick));
                         server.broadcastMessage(String.format("%s поменял свой ник на %s",
                                 oldNick, newNick));
                         server.broadcastUserList();

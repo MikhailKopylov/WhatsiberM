@@ -10,16 +10,20 @@ public class DbHelper {
     private static PreparedStatement prStatement;
 
     public DbHelper() {
-        if (connection == null) {
-            Thread threadConnect = new Thread(() -> {
-                try {
-                    connect();
-                } catch (ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
-                }
-            });
-            threadConnect.setDaemon(true);
-            threadConnect.start();
+        try {
+            if (connection == null || connection.isClosed()) {
+                Thread threadConnect = new Thread(() -> {
+                    try {
+                        connect();
+                    } catch (ClassNotFoundException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+                threadConnect.setDaemon(true);
+                threadConnect.start();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

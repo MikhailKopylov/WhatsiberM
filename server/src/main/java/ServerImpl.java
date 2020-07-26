@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class ServerImpl implements Server {
@@ -15,6 +17,7 @@ public class ServerImpl implements Server {
 
     private final List<ClientHandler> clients;
     private final UsersOnline usersOnline;
+    ExecutorService executorService = Executors.newCachedThreadPool();
 
 
     public ServerImpl() {
@@ -29,12 +32,14 @@ public class ServerImpl implements Server {
             System.out.println("Server run");
             while (true) {
                 Socket socket = server.accept();
-                new ClientHandlerImpl(this, socket, usersOnline);
+                executorService.execute(new ClientHandlerImpl(this, socket, usersOnline));
                 System.out.println("Client connected");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            executorService.shutdown();
         }
     }
 
@@ -83,6 +88,7 @@ public class ServerImpl implements Server {
             clients.remove(clientHandler);
             broadcastUserList();
             System.out.println(String.format("%s отключился", clientHandler.getUser().getNick()));
+//            clientHandler.
         }
     }
 

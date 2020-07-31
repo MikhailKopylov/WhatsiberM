@@ -1,16 +1,16 @@
 package interfaces;
 
-import intefaces.Message;
+import commands.Commands;
 import users.Password;
 import users.UserData;
 
 public interface Client {
 
-    String REGEX_SPLIT = "\\s+";
 
-    void sendMessage(String  message);
-    void readIncomingMessage();
+    void sendMessage(Commands command, String  message);
     void sendPrivateMessage(String message, String nickRecipient);
+    void sendCommandMsg(Commands commands, String dataCommand);
+    void readIncomingMessage();
 
     boolean isRun();
     String getNick();
@@ -23,4 +23,5 @@ public interface Client {
     void savePrivateMessageLocal(String sender, String recipient, String message);
 
     void setLogin(String login);
+
 }

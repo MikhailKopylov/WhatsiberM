@@ -1,15 +1,11 @@
-package messagesHandler;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 import intefaces.Message;
 import intefaces.MessageHandler;
 
-import java.io.FileReader;
 import java.text.DateFormat;
 
-public class MessageHandlerJSON implements MessageHandler {
+public class HandlerMessageJSON implements MessageHandler {
 
 
 

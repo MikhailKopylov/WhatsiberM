@@ -5,3 +5,21 @@ user3 отправил личное сообщение для user1 : wefggqwreg
 user1:: привет
 user2 отправил личное сообщение для user1 : 123
 user1:: qwertyyyyyy
+/msgBroadcast  user2: 1596102779229 svsvsb
+/privateMsg  user1 user1 1596139371371 1596139371366 asva
+/privateMsg  user1 user1 1596141741774 1596141720123 qwwee
+/privateMsg  user1 user1 1596141782999 1596141776191 xcbxcb
+/privateMsg  user1 user1 1596141871966 1596141866319 zvxcbb
+/broadcastMsg  user1 1596142939285 dsgbs
+/broadcastMsg  user1 1596142942360 sdfbdsfbsdb
+/broadcastMsg  user2 1596142963706 sdvsfdv
+/broadcastMsg  user2 1596142970769 sdvsdvsd
+/broadcastMsg  user1 1596143393021 3463673
+/privateMsg  user1 user2 1596143397113 2436246246
+/privateMsg  user1 user1 1596143775529 qwwqr
+личное сообщение от user1 для user1: sdfhsh
+/broadcastMsg  user1 1596183473116 sdfbfn
+личное сообщение от user1 для user1: sfncvncvmn
+личное сообщение от user1 для user1: vbnm,
+личное сообщение от user10 для user1: sasfehnsgnjstgnm
+/broadcastMsg  user1 1596183772296 afbafbafn

@@ -1,4 +1,8 @@
-import com.sun.org.apache.regexp.internal.RE;
+import commands.Commands;
+import commands.REGEXS;
+import intefaces.MsgBroadcast;
+import intefaces.MessageHandler;
+import intefaces.MsgPrivate;
 import interfaces.Client;
 import interfaces.SaveHistory;
 import users.*;
@@ -28,12 +32,13 @@ public class ClientImpl implements Client {
     private String nick;
     private String login;
     private PublicUserData user = null;
+    private final MessageHandler messageHandler;
 
     private SaveHistory saveHistory;
 
     public ClientImpl(Controller controller) {
         this.controller = controller;
-
+        this.messageHandler = new HandlerSimpleMsg();
         connected();
         readIncomingMessage();
     }
@@ -49,9 +54,11 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(Commands command, String message) {
         try {
-            out.writeUTF(message);
+            MsgBroadcast msgBroadcast = new MsgBroadcastImpl(command,
+                    new NickName(nick), new Date(), message);
+            out.writeUTF(messageHandler.messageToString(msgBroadcast));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,9 +67,22 @@ public class ClientImpl implements Client {
     @Override
     public void sendPrivateMessage(String message, String nickRecipient) {
         try {
-            String privateMsg = String.format("%s %s %s",
-                    Commands.PRIVATE_MESSAGE, nickRecipient, message);
-            out.writeUTF(privateMsg);
+//            String privateMsg = String.format("%s %s %s",
+//                    Commands.PRIVATE_MESSAGE, nickRecipient, message);
+            MsgPrivate msgPrivate =
+                    new MsgLocalPrivate(Commands.PRIVATE_MESSAGE, new NickName(nick),
+                            new NickName(nickRecipient),new Date(), message);
+            out.writeUTF(messageHandler.messageToString(msgPrivate));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendCommandMsg(Commands commands, String dataCommand) {
+        MsgCommand command = new MsgCommand(commands, dataCommand);
+        try{
+            out.writeUTF(messageHandler.messageToString(command));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,7 +105,7 @@ public class ClientImpl implements Client {
                     }
 
                     if (commandMsg.startsWith(Commands.AUTH_OK.toString())) {
-                        nick = commandMsg.split(REGEX_SPLIT)[1];
+                        nick = commandMsg.split(REGEXS.REGEX_SPLIT)[1];
                         controller.addNewMessage(String.format("%s в сети", nick));
                         controller.setAuthorized(true);
                         user = new PublicUserData(new Login(login), new NickName(nick));
@@ -106,7 +126,7 @@ public class ClientImpl implements Client {
                         parseCommandMsg(incomingMsg);
                     } else {
                         controller.addNewMessage(incomingMsg);
-                        String[] token = incomingMsg.split(REGEX_SPLIT);
+                        String[] token = incomingMsg.split(REGEXS.REGEX_SPLIT);
                         if(token.length >= 2) {
                             saveMessageLocal(token[0], token[1]);
                         } else {
@@ -124,7 +144,7 @@ public class ClientImpl implements Client {
     }
 
     private void parseAuthRegCommand(String commandMsg) {
-        String commandStr = commandMsg.split(REGEX_SPLIT)[0];
+        String commandStr = commandMsg.split(REGEXS.REGEX_SPLIT)[0];
         Commands command = Commands.convertToCommand(commandStr);
 
         switch (Objects.requireNonNull(command)) {
@@ -143,61 +163,74 @@ public class ClientImpl implements Client {
                 break;
 
             case ONLINE_WRONG:
-                String nickOnlineWrong = commandMsg.split(REGEX_SPLIT)[1];
+                String nickOnlineWrong = commandMsg.split(REGEXS.REGEX_SPLIT)[1];
                 controller.addNewMessage(String.format("%s уже в сети", nickOnlineWrong));
                 break;
             case USER_OUTLINE:
-                String userOutline = commandMsg.split(REGEX_SPLIT)[1];
+                String userOutline = commandMsg.split(REGEXS.REGEX_SPLIT)[1];
                 controller.addNewMessage(userOutline);
         }
-//        if (commandMsg.startsWith(Commands.AUTH_WRONG.toString())) {
-//        } else if (commandMsg.startsWith(Commands.REG_OK.toString())) {
-//        } else if (commandMsg.startsWith(Commands.REG_WRONG.toString())) {
-//        } else if (commandMsg.startsWith(Commands.ONLINE_WRONG.toString())) {
+//        if (commandMsg.startsWith(commands.Commands.AUTH_WRONG.toString())) {
+//        } else if (commandMsg.startsWith(commands.Commands.REG_OK.toString())) {
+//        } else if (commandMsg.startsWith(commands.Commands.REG_WRONG.toString())) {
+//        } else if (commandMsg.startsWith(commands.Commands.ONLINE_WRONG.toString())) {
 //        }
     }
 
     private void parseCommandMsg(String incomingMsg) {
-        String commandStr = incomingMsg.split(REGEX_SPLIT, 2)[0];
+        String commandStr = incomingMsg.split(REGEXS.REGEX_SPLIT, 2)[0];
         Commands command = Commands.convertToCommand(commandStr);
         String[] token;
         switch (Objects.requireNonNull(command)) {
 
+            case BROADCAST_MSG:
+                token = incomingMsg.split(REGEXS.REGEX_SPLIT, 4);
+                String sender = token[1];
+//                String recipient = token[2];
+                Date date = new Date(Long.parseLong(token[2]));
+                String message = token[3];
+                saveMessageLocal(sender, message);
+//                savePrivateMessageLocal(sender, recipient, message);
+                controller.addNewMessage(String.format("%s: %s", sender, message));
+                break;
+
             case USER_ONLINE:
-                String newUserNick = incomingMsg.split(REGEX_SPLIT)[1];
+                String newUserNick = incomingMsg.split(REGEXS.REGEX_SPLIT)[1];
                 controller.addNewMessage(String.format("%s в сети", newUserNick));
                 break;
 
             case USER_LIST:
-                token = incomingMsg.split(REGEX_SPLIT, 2);
-                String[] users = token[1].split(REGEX_SPLIT);
+                token = incomingMsg.split(REGEXS.REGEX_SPLIT, 2);
+                String[] users = token[1].split(REGEXS.REGEX_SPLIT);
                 controller.updateUserList(users);
                 break;
 
             case CHANGE_NICK_OK:
-                String newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
+                String newNick = incomingMsg.split(REGEXS.REGEX_SPLIT, 2)[1];
                 controller.getChangeNickController().addMessage("Смена ника прошла успешно. Ваш новый ник: " + newNick);
                 nick = newNick;
                 controller.getChangeNickController().setNewNick(nick);
                 break;
 
             case CHANGE_NICK_WRONG:
-                newNick = incomingMsg.split(REGEX_SPLIT, 2)[1];
+                newNick = incomingMsg.split(REGEXS.REGEX_SPLIT, 2)[1];
                 controller.getChangeNickController()
                         .addMessage(newNick + " - такой ник уже используется. Введите другой вариант.");
                 break;
             case PRIVATE_MESSAGE:
-                token = incomingMsg.split(REGEX_SPLIT, 4);
-                String sender = token[1];
+                MsgPrivate msgPrivate = new MsgLocalPrivate(incomingMsg);
+                token = incomingMsg.split(REGEXS.REGEX_SPLIT, 5);
+                sender = token[1];
                 String recipient = token[2];
-                String message = token[3];
+                date = new Date(Long.parseLong(token[3]));
+                message = token[4];
                 savePrivateMessageLocal(sender, recipient, message);
-                controller.addNewMessage(message);
+                controller.addNewMessage(msgPrivate.getTextMessage());
         }
-//        if (incomingMsg.startsWith(Commands.USER_ONLINE.toString())) {
-//        } else if (incomingMsg.startsWith(Commands.USER_LIST.toString())) {
-//        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_OK.toString())) {
-//        } else if (incomingMsg.startsWith(Commands.CHANGE_NICK_WRONG.toString())) {
+//        if (incomingMsg.startsWith(commands.Commands.USER_ONLINE.toString())) {
+//        } else if (incomingMsg.startsWith(commands.Commands.USER_LIST.toString())) {
+//        } else if (incomingMsg.startsWith(commands.Commands.CHANGE_NICK_OK.toString())) {
+//        } else if (incomingMsg.startsWith(commands.Commands.CHANGE_NICK_WRONG.toString())) {
 //        }
 
     }
@@ -259,7 +292,9 @@ public class ClientImpl implements Client {
     @Override
     public void saveMessageLocal(String nick, String message) {
         saveHistory = getLocalHistory();
-        saveHistory.saveBroadcastMessage(new BroadcastMsgLocal(new PublicUserData(new NickName(nick)),new Date(), message));
+        saveHistory.saveBroadcastMessage(
+                new MsgBroadcastImpl(Commands.BROADCAST_MSG,
+                        new NickName(nick),new Date(), message));
     }
 
     @Override
@@ -267,12 +302,15 @@ public class ClientImpl implements Client {
         saveHistory = getLocalHistory();
         NickName sender = new NickName(senderNick);
         NickName recipient = new NickName(recipientNick);
-        PublicUserData user = saveHistory.getUser();
-        saveHistory.savePrivateMessage(new PrivateMsgLocal(sender, recipient, user,  message, new Date()));
+//        PublicUserData user = saveHistory.getUser();
+        saveHistory.savePrivateMessage(
+                new MsgLocalPrivate(Commands.PRIVATE_MESSAGE, sender, recipient, new Date(),  message));
     }
 
     @Override
     public void setLogin(String login) {
         this.login = login;
     }
+
+
 }

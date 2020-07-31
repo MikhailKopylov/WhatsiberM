@@ -1,7 +1,12 @@
+package commands;
+
 public enum Commands {
+
 
     AUTH_OK("/authOK"),
     AUTH_WRONG("/authWrong"),
+    BROADCAST_MSG("/broadcastMsg"),
+    BROADCAST_SERVICE("/broadcastService"),
     CHECK_AUTH("/auth"),
     CHANGE_NICK("/changeNick"),
     CHANGE_NICK_OK("/changeNickOK"),

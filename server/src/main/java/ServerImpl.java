@@ -1,3 +1,6 @@
+import commands.Commands;
+import intefaces.Message;
+import intefaces.MsgPrivate;
 import interfaces.ClientHandler;
 import interfaces.Server;
 import interfaces.UsersOnline;
@@ -17,7 +20,7 @@ public class ServerImpl implements Server {
 
     private final List<ClientHandler> clients;
     private final UsersOnline usersOnline;
-    ExecutorService executorService = Executors.newCachedThreadPool();
+    final ExecutorService executorService = Executors.newCachedThreadPool();
 
 
     public ServerImpl() {
@@ -32,7 +35,7 @@ public class ServerImpl implements Server {
             System.out.println("Server run");
             while (true) {
                 Socket socket = server.accept();
-                executorService.execute(new ClientHandlerImpl(this, socket, usersOnline));
+                executorService.execute(new ClientHandlerImplObject(this, socket, usersOnline));
                 System.out.println("Client connected");
             }
 
@@ -44,26 +47,27 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void broadcastMessage(String message) {
+    public void broadcastMessage(Message message) {
         for (ClientHandler client : clients) {
             client.sendMessage(message);
         }
     }
 
     @Override
-    public void sendMessagePrivate(String message, ClientHandler senderClient, String nickRecipient) {
+    public void sendMessagePrivate(MsgPrivate message, ClientHandler senderClient, String nickRecipient) {
         ClientHandler recipientClient = findClientHandler(nickRecipient);
         String nickSender = senderClient.getUser().getNick().toString();
         if (recipientClient != null && (usersOnline.isUserOnline(recipientClient.getUser()))) {
             String format = String.format("%s %s %s %s отправил личное сообщение для %s : %s",
                     Commands.PRIVATE_MESSAGE, nickSender, nickRecipient,
                     nickSender, nickRecipient, message);
-            senderClient.sendMessage(format);
+            senderClient.sendMessage(message);
             if (!senderClient.equals(recipientClient)) {
-                recipientClient.sendMessage(format);
+                recipientClient.sendMessage(message);
             }
         } else {
-            senderClient.sendMessage(String.format("%s не в сети", nickRecipient));
+            String msgService = String.format("%s не в сети", nickRecipient);
+            senderClient.sendMessage(new MsgCommand(Commands.BROADCAST_SERVICE,msgService));
         }
     }
 
@@ -94,7 +98,7 @@ public class ServerImpl implements Server {
 
     @Override
     public void broadcastUserList() {
-        StringBuilder builder = new StringBuilder(Commands.USER_LIST.toString());
+        StringBuilder builder = new StringBuilder();
 
         for (ClientHandler client : clients) {
             builder.append(client.getUser().getNick()).append(" ");
@@ -103,7 +107,7 @@ public class ServerImpl implements Server {
         String message = builder.toString();
 
         for (ClientHandler client : clients) {
-            client.sendMessage(message);
+            client.sendMessage(new MsgCommand(Commands.USER_LIST, message));
         }
     }
 }

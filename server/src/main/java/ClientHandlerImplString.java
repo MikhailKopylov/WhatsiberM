@@ -1,19 +1,9 @@
-import interfaces.*;
-import users.*;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.Objects;
-
-//import static Commands.*;
+//import static commands.Commands.*;
 
 
-public class ClientHandlerImpl implements ClientHandler, Runnable {
+public class ClientHandlerImplString /*implements ClientHandler, Runnable */{
 
-    public static final String REGEX_SPLIT = "\\s+";
+ /*   public static final String REGEX_SPLIT = "\\s+";
     public static final int TIMEOUT = 120_000;
 
     private final Server server;
@@ -31,7 +21,7 @@ public class ClientHandlerImpl implements ClientHandler, Runnable {
         return authentication;
     }
 
-    public ClientHandlerImpl(Server server, Socket socket, UsersOnline usersOnline) {
+    public ClientHandlerImplString(Server server, Socket socket, UsersOnline usersOnline) {
         this.server = server;
         this.socket = socket;
         this.usersOnline = usersOnline;
@@ -65,9 +55,9 @@ public class ClientHandlerImpl implements ClientHandler, Runnable {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(Message message) {
         try {
-            out.writeUTF(message);
+            out.writeUTF(message.msgToString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,7 +98,6 @@ public class ClientHandlerImpl implements ClientHandler, Runnable {
                         System.out.println(Commands.AUTH_WRONG);
                     }
                 }
-
             } catch (SocketTimeoutException e) {
                 sendMessage(Commands.EXIT.toString());
             } catch (IOException e) {
@@ -192,7 +181,9 @@ public class ClientHandlerImpl implements ClientHandler, Runnable {
                     }
                 }
                 break;
-
+            case BROADCAST_MSG:
+                server.broadcastMessage(user.getNick() + ": " + incomingMsg);
+                saveMessage.saveBroadcastMsg(user, incomingMsg);
             default:
                 throw new IllegalStateException("Unexpected command: " + token[0]);
         }
@@ -238,5 +229,5 @@ public class ClientHandlerImpl implements ClientHandler, Runnable {
         Password pass = new Password(token[2]);
         return getAuthentication().getUserAuth(login, pass);
     }
-
+*/
 }

@@ -1,3 +1,4 @@
+import commands.REGEXS;
 import interfaces.Client;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,7 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-class ChangeNickController implements Initializable{
+public class ChangeNickController implements Initializable{
 
     @FXML
     public TextField oldNickField;
@@ -38,7 +39,7 @@ class ChangeNickController implements Initializable{
         textArea.appendText(msg+"\n");
     }
 
-    void clickCancelBtn() {
+    public void clickCancelBtn() {
         Platform.runLater(() -> ((Stage) oldNickField.getScene().getWindow()).close());
     }
 
@@ -52,7 +53,7 @@ class ChangeNickController implements Initializable{
     public void tryToChange() {
         String oldNick = oldNickField.getText();
         String newNick = newNickField.getText();
-        if(newNick.split(Client.REGEX_SPLIT).length > 1){
+        if(newNick.split(REGEXS.REGEX_SPLIT).length > 1){
             addMessage("Ваш новый ник должен быть без пробелов");
             return;
         }

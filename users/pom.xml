@@ -20,6 +20,12 @@
             <version>3.31.1</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.amk</groupId>-->
+<!--            <artifactId>messages</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
 </project>

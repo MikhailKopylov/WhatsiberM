@@ -1,5 +1,5 @@
-import intefaces.BroadcastMsg;
-import intefaces.PrivateMsg;
+import intefaces.MsgBroadcast;
+import intefaces.MsgPrivate;
 import interfaces.SaveHistory;
 import users.PublicUserData;
 
@@ -98,7 +98,7 @@ public class SaveHistoryLocal implements SaveHistory {
     }
 
     @Override
-    public void saveBroadcastMessage(BroadcastMsg broadcastMessage) {
+    public void saveBroadcastMessage(MsgBroadcast broadcastMessage) {
 //        String messageToJSON = null;
 //        try {
 //            FileWriter fileWriter = new FileWriter(localHistoryAll, true);
@@ -133,7 +133,7 @@ public class SaveHistoryLocal implements SaveHistory {
     }
 
     @Override
-    public void savePrivateMessage(PrivateMsg message) {
+    public void savePrivateMessage(MsgPrivate message) {
 //        String messageToJSON = null;
 //        try {
 //            FileWriter fileWriter = new FileWriter(localHistoryPrivate, true);

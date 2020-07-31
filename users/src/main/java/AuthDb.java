@@ -20,13 +20,13 @@ public class AuthDb implements Authentication {
     }
 
     @Override
-    public boolean isNickExists(String nickName) {
-        return dbHelper.getLogin(nickName) != null;
+    public boolean isNickExists(NickName nickName) {
+        return dbHelper.getLogin(nickName.getNick()) != null;
     }
 
     @Override
     public boolean registration(UserData user) {
-        if (isLoginExist(user.getLogin()) || isNickExists(user.getNick().getNick())) {
+        if (isLoginExist(user.getLogin()) || isNickExists(user.getNick())) {
             return false;
         } else {
             dbHelper.addUser(user);

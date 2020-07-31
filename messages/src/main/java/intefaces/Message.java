@@ -1,12 +1,14 @@
 package intefaces;
+import commands.Commands;
+import users.NickName;
 
-import users.UserData;
-
-import java.io.Serializable;
 import java.util.Date;
 
 public interface Message {
 
     String getTextMessage();
     Date getDateMessage();
+    Commands getCommands();
+    NickName getNickSender();
+    String msgToString();
 }

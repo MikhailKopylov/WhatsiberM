@@ -35,9 +35,9 @@ public class AuthSimple implements Authentication {
     }
 
     @Override
-    public boolean isNickExists(String nickName) {
+    public boolean isNickExists(NickName nickName) {
         for (UserData userData : userDataMap.values()) {
-            if(userData.getNick().toString().equals(nickName)){
+            if(userData.getNick().equals(nickName)){
                 return true;
             }
         }

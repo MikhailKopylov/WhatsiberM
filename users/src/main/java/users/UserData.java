@@ -13,6 +13,7 @@ public class UserData {
         this.nick = nick;
     }
 
+
     public Login getLogin() {
         return login;
     }

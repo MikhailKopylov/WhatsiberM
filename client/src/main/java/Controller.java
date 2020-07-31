@@ -1,3 +1,4 @@
+import commands.Commands;
 import interfaces.Client;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -59,7 +60,7 @@ public class Controller implements Initializable {
             stage = (Stage) loginTextField.getScene().getWindow();
             stage.setOnCloseRequest(event -> {
                 if (client.isRun()) {
-                    client.sendMessage(Commands.EXIT.toString());
+                    client.sendCommandMsg(Commands.EXIT, null);
                 }
             });
         });
@@ -91,7 +92,7 @@ public class Controller implements Initializable {
 
     public void sendMessage(ActionEvent actionEvent) {
         String message = newMsgTextField.getText();
-        client.sendMessage(message);
+        client.sendMessage(Commands.BROADCAST_MSG, message);
 //        client.saveSendMessageLocal(message);
         newMsgTextField.clear();
         newMsgTextField.requestFocus();
@@ -105,7 +106,7 @@ public class Controller implements Initializable {
         String login = loginTextField.getText();
         String pass = passTextField.getText();
         if (!login.isEmpty() && !pass.isEmpty()) {
-            client.sendMessage(String.format("%s %s %s", Commands.CHECK_AUTH, login, pass));
+            client.sendCommandMsg(Commands.CHECK_AUTH, String.format("%s %s",  login, pass));
             client.setLogin(login);
             passTextField.clear();
         }
@@ -131,7 +132,7 @@ public class Controller implements Initializable {
     }
 
     public void logout() {
-        client.sendMessage(Commands.EXIT.toString());
+        client.sendCommandMsg(Commands.EXIT, null);
         Platform.runLater(() -> stage.close());
 
 

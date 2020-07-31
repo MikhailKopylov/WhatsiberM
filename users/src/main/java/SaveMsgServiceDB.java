@@ -18,8 +18,8 @@ public class SaveMsgServiceDB implements SaveMessageService {
     }
 
     @Override
-    public void savePrivateMsg(UserData sender, NickName recipient, String message) {
-        dbHelper.savePrivateMsg(sender.getNick(), recipient, message);
+    public void savePrivateMsg(NickName sender, NickName recipient, String message) {
+        dbHelper.savePrivateMsg(sender, recipient, message);
 
     }
 }

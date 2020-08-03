@@ -17,7 +17,7 @@ import java.net.SocketTimeoutException;
 
 import static commands.REGEXS.REGEX_SPLIT;
 
-public class ClientHandlerImplObject implements ClientHandler, Runnable {
+public class ClientHandlerImplObject implements ClientHandler {
 
     public static final int TIMEOUT = 120_000;
 

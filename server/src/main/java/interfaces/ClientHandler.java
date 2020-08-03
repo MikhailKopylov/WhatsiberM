@@ -4,7 +4,7 @@ import intefaces.Message;
 import users.NickName;
 import users.UserData;
 
-public interface ClientHandler {
+public interface ClientHandler extends Runnable {
 
     boolean checkAuthenticating();
     void sendMessage(Message message);

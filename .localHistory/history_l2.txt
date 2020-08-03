@@ -4,11 +4,5 @@ user1 отправил личное сообщение для user2 : 124124
 user3 отправил личное сообщение для user2 : aergaerag
 user1:: привет
 user2 отправил личное сообщение для user1 : 123
-user1:: qwertyyyyyy
-/msgBroadcast  user2: 1596102779224 svsvsb
-/msgPrivate  user2 user2 1596102786955 user2 отправил личное сообщение для user2 : wegweweb
-/broadcastMsg  user2 1596142963705 sdvsfdv
-/broadcastMsg  user2 1596142970770 sdvsdvsd
-/broadcastMsg  user1 1596143393026 3463673
-/privateMsg  user1 user2 1596143397141 2436246246
-/privateMsg  user2 user2 1596143624438 ascasca
+user1:: qwertyyyyyy/broadcastMsg  user2 1596471975714 sdhgerwshasjstjr
+личное сообщение от user2 для user1: fbsdfnbsgnsgn

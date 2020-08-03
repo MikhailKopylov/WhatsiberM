@@ -4,3 +4,6 @@ user3 отправил личное сообщение для user1 : wefggqwreg
 user3 отправил личное сообщение для user2 : aergaerag
 user3 отправил личное сообщение для user3 : aergaergaerg
 user1:: qwertyyyyyy
+/broadcastMsg  user3 1596480018008 sgjsgjsg
+личное сообщение от user3 для user3: 112345465765
+личное сообщение от user3 для user1: 09867654321

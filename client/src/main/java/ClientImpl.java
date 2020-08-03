@@ -38,7 +38,7 @@ public class ClientImpl implements Client {
 
     public ClientImpl(Controller controller) {
         this.controller = controller;
-        this.messageHandler = new HandlerSimpleMsg();
+        this.messageHandler = new HandlerMsgJSON();
         connected();
         readIncomingMessage();
     }

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static commands.Commands.*;
 
-public class HandlerSimpleMsg implements MessageHandler {
+public class HandlerMsgSimple implements MessageHandler {
 
 
     @Override

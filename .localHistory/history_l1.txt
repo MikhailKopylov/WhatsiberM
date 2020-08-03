@@ -14,3 +14,7 @@ user1:: qwertyyyyyy
 /broadcastMsg  user1 1596472851446 qvqqe
 /broadcastMsg  user1 1596474044338 acav
 личное сообщение от user1 для user1: cxzbzxcbzx
+/broadcastMsg  user1 1596479950134 6iop6p
+личное сообщение от user1 для user1: 676700
+/broadcastMsg  user3 1596480018010 sgjsgjsg
+личное сообщение от user3 для user1: 09867654321

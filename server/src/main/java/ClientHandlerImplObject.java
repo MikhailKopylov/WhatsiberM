@@ -42,7 +42,7 @@ public class ClientHandlerImplObject implements ClientHandler {
         this.usersOnline = usersOnline;
         authentication = new AuthDb();
         saveMessage = new SaveMsgServiceDB();
-        messageHandler = new HandlerSimpleMsg();
+        messageHandler = new HandlerMsgJSON();
 
         initializeStreams();
     }
@@ -80,7 +80,7 @@ public class ClientHandlerImplObject implements ClientHandler {
                         return false;
 
                     case TRY_REG:
-                        String[] token = authMsg.split(REGEX_SPLIT);
+                        String[] token = message.getTextMessage().split(REGEX_SPLIT);
                         if (token.length >= 4) {
                             if (authentication.registration(new UserData
                                     (new Login(token[1]), new Password(token[2]), new NickName(token[3])))) {
@@ -92,7 +92,7 @@ public class ClientHandlerImplObject implements ClientHandler {
                         break;
 
                     case CHECK_AUTH:
-                        user = authenticating(authMsg);
+                        user = authenticating(message.getTextMessage());
                         if (user != null) {
                             if (!usersOnline.isUserOnline(user)) {
                                 authOK(user);
@@ -212,8 +212,8 @@ public class ClientHandlerImplObject implements ClientHandler {
 
     private UserData authenticating(String incomingMsg) {
         String[] token = incomingMsg.split(REGEX_SPLIT);
-        Login login = new Login(token[1]);
-        Password pass = new Password(token[2]);
+        Login login = new Login(token[0]);
+        Password pass = new Password(token[1]);
         return getAuthentication().getUserAuth(login, pass);
     }
 

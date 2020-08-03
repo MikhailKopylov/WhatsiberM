@@ -9,7 +9,6 @@ public class MsgLocalPrivate implements MsgPrivate {
 
     private final NickName sender;
     private final NickName recipient;
-//    private final PublicUserData user;
     private final String textMsg;
     private final Date dateMessage;
     private final Commands command;
@@ -19,7 +18,6 @@ public class MsgLocalPrivate implements MsgPrivate {
         this.command = command;
         this.sender = sender;
         this.recipient = recipient;
-//        this.user = user;
         this.textMsg = textMsg;
         this.dateMessage = dateMessage;
     }

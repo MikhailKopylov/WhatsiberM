@@ -12,3 +12,5 @@ user1:: qwertyyyyyy
 /broadcastMsg  user2 1596471975740 sdhgerwshasjstjr
 личное сообщение от user2 для user1: fbsdfnbsgnsgn
 /broadcastMsg  user1 1596472851446 qvqqe
+/broadcastMsg  user1 1596474044338 acav
+личное сообщение от user1 для user1: cxzbzxcbzx

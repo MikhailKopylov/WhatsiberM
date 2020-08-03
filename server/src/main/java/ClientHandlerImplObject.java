@@ -134,7 +134,8 @@ public class ClientHandlerImplObject implements ClientHandler {
                 Commands command = message.getCommands();
                 switch (command){
                     case EXIT:
-                        break;
+                        server.unsubscribe(this);
+                        return;
                     default:
                         parseCommandMessage(message);
                 }

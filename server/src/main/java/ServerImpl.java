@@ -107,6 +107,7 @@ public class ServerImpl implements Server {
             logger.log(Level.INFO, String.format("%s отключился", clientHandler.getUser().getNick()));
 //            clientHandler.
         }
+        usersOnline.removeUserOnline(clientHandler.getUser());
     }
 
     @Override
